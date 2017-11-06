@@ -16,6 +16,13 @@ module.exports = {
                 ['env', {'modules': false}], 'react'
               ]
             }
+          },
+          {
+            loader: 'eslint-loader',
+            options: {
+              fix: true,
+              failOnError: true,
+            }
           }
         ],
         exclude: /node_modules/,
