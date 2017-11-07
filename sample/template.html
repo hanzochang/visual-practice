@@ -1,0 +1,101 @@
+<body>
+    <div id="container"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/88/three.min.js"></script>
+    <script id="vertexShader" type="x-shader/x-vertex">
+        void main() {
+            gl_Position = vec4( position, 1.0 );
+        }
+    </script>
+    <script id="fragmentShader" type="x-shader/x-fragment">
+        precision mediump float;
+        uniform vec2 resolution;
+
+        void main() {
+          // x,y軸の短い辺を1.0として
+          // 中心からの位置(x,y)を相対的に表現したパラメータ
+          vec2 p = (gl_FragCoord.xy * 2.0 - resolution) / min(resolution.x, resolution.y);
+
+          // boxの高さを定義 * [音楽連動係数]
+          float box_height = 1.0; // * volume_val;
+          // boxのborderの太さを定義 * [音楽連動係数]
+          float box_line_border = 0.02;
+
+          // 自身(pixel)のxまたはyがbox_outerの領域を超えていなければ 1.0 そうでなければ 0.0
+          float box_outer = 1.0 - step(box_height/2., max(abs(p.x), abs(p.y)));
+
+          // 自身(pixel)のxまたはyがbox_innerの領域を超えていなければ 1.0 そうでなければ 0.0
+          float box_inner = 1.0 - step(box_height/2. - box_line_border, max(abs(p.x), abs(p.y)));
+
+          // box_outer - box_inner を行い 太さの部分だけを着色するようにする
+          float color = box_outer - box_inner;
+
+          // 自身(pixel)を計算したカラーで着色
+          gl_FragColor = vec4(vec3(color), 1.0);
+        }
+
+
+    </script>
+    <script>
+        var container;
+        var camera, scene, renderer;
+        var uniforms;
+
+        init();
+        animate();
+
+        function init() {
+            container = document.getElementById( 'container' );
+
+            camera = new THREE.Camera();
+            camera.position.z = 1;
+
+            scene = new THREE.Scene();
+
+            var geometry = new THREE.PlaneBufferGeometry( 2, 2 );
+
+            uniforms = {
+                time: { type: "f", value: 1.0 },
+                resolution: { type: "v2", value: new THREE.Vector2() },
+                mouse: { type: "v2", value: new THREE.Vector2() }
+            };
+
+            var material = new THREE.ShaderMaterial( {
+                uniforms: uniforms,
+                vertexShader: document.getElementById( 'vertexShader' ).textContent,
+                fragmentShader: document.getElementById( 'fragmentShader' ).textContent
+            } );
+
+            var mesh = new THREE.Mesh( geometry, material );
+            scene.add( mesh );
+
+            renderer = new THREE.WebGLRenderer();
+            renderer.setPixelRatio( window.devicePixelRatio );
+
+            container.appendChild( renderer.domElement );
+
+            onWindowResize();
+            window.addEventListener( 'resize', onWindowResize, false );
+
+            document.onmousemove = function(e){
+              uniforms.mouse.value.x = e.pageX
+              uniforms.mouse.value.y = e.pageY
+            }
+        }
+
+        function onWindowResize( event ) {
+            renderer.setSize( window.innerWidth, window.innerHeight );
+            uniforms.resolution.value.x = renderer.domElement.width;
+            uniforms.resolution.value.y = renderer.domElement.height;
+        }
+
+        function animate() {
+            requestAnimationFrame( animate );
+            render();
+        }
+
+        function render() {
+            uniforms.time.value += 0.05;
+            renderer.render( scene, camera );
+        }
+    </script>
+</body>
