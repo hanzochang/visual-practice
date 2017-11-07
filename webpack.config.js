@@ -26,6 +26,14 @@ module.exports = {
           }
         ],
         exclude: /node_modules/,
+      },
+      {
+        test: /\.glsl|\.frag|\.vert$/,
+        use: [
+          {
+            loader: 'webpack-glsl-loader'
+          }
+        ]
       }
     ]
   },
