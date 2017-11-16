@@ -63,6 +63,8 @@
                 fragmentShader: document.getElementById( 'fragmentShader' ).textContent
             } );
 
+            console.log(material);
+
             var mesh = new THREE.Mesh( geometry, material );
             scene.add( mesh );
 

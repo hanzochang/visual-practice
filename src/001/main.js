@@ -8,7 +8,8 @@ window.addEventListener('DOMContentLoaded', () => {
   three.buildAll();
   three.camera.position.z = 1;
 
-  const geometry = new THREE.PlaneBufferGeometry(6, 6);
+  // const geometry = new THREE.PlaneBufferGeometry(6, 6);
+  const geometry = new THREE.BoxGeometry(3, 3, 1);
 
   const unifor = {
     resolution: { type: 'v2', value: new THREE.Vector2() },
@@ -28,7 +29,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const box = new THREE.Mesh(geo2, material);
   const mesh = new THREE.Mesh(geometry, material);
 
-  box.position.z = -5;
+  box.position.z = -10;
   mesh.position.z = -10;
   three.scene.add(box);
   three.scene.add(light);
@@ -40,11 +41,13 @@ window.addEventListener('DOMContentLoaded', () => {
 
   const tick = () => {
     requestAnimationFrame(tick);
-    mesh.rotation.x += 0.05;
-    mesh.rotation.y += 0.05;
+    mesh.rotation.x += 0.01;
+    mesh.rotation.y += 0.01;
+    mesh.rotation.z += 0.01;
 
-    box.rotation.x += 0.05;
-    box.rotation.y += 0.05;
+    box.rotation.x += 0.01;
+    box.rotation.y += 0.01;
+    box.rotation.y += 0.01;
 
     // 描画
     three.renderer.render(three.scene, three.camera);
