@@ -1,7 +1,8 @@
 module.exports = {
   entry: {
-    '001/app.js': './src/001/app.js',
-    '002/app.js': './src/002/app.js'
+    //'001/app.js': './src/001/app.js',
+    '002/app.js': './src/002/app.js',
+    '003/app.js': './src/003/app.js'
   },
   output: {
     path: `${__dirname}/build`,
